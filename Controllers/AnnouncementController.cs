@@ -36,5 +36,27 @@ namespace AnnouncementWeb.Controllers
             await _db.SaveChangesAsync();
             return Ok(addAnnouncement);
         }
+
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult<Announcement>> Update([FromRoute]int id, [FromBody]AnnouncementRequest announcementRequest)
+        {
+            var updateAnnouncement = _mapper.Map<Announcement>(announcementRequest);
+            updateAnnouncement.Id = id;
+            _db.Announcements.Update(updateAnnouncement);
+            await _db.SaveChangesAsync();
+            return Ok(announcementRequest);
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<Announcement>> Delete([FromRoute] int id)
+        {
+            Announcement announcement = await _db.Announcements.FirstOrDefaultAsync(_ => _.Id == id);
+            if (announcement == null)
+                return NotFound();
+
+            _db.Announcements.Remove(announcement);
+            await _db.SaveChangesAsync();
+            return Ok(announcement);
+        }
     }
 }
