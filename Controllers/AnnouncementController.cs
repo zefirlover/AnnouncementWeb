@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -38,7 +39,8 @@ namespace AnnouncementWeb.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<Announcement>> Update([FromRoute]int id, [FromBody]AnnouncementRequest announcementRequest)
+        public async Task<ActionResult<Announcement>> Update([FromRoute]int id,
+            [FromBody]AnnouncementRequest announcementRequest)
         {
             var updateAnnouncement = _mapper.Map<Announcement>(announcementRequest);
             updateAnnouncement.Id = id;
@@ -48,7 +50,7 @@ namespace AnnouncementWeb.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<ActionResult<Announcement>> Delete([FromRoute] int id)
+        public async Task<ActionResult<Announcement>> Delete([FromRoute]int id)
         {
             Announcement announcement = await _db.Announcements.FirstOrDefaultAsync(_ => _.Id == id);
             if (announcement == null)
@@ -57,6 +59,20 @@ namespace AnnouncementWeb.Controllers
             _db.Announcements.Remove(announcement);
             await _db.SaveChangesAsync();
             return Ok(announcement);
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<Announcement>> GetById([FromRoute] int id)
+        {
+            // get announcement by id
+            Announcement announcement = await _db.Announcements.FirstOrDefaultAsync(_ => _.Id == id);
+            if (announcement == null)
+                return NotFound();
+
+            // find all announcements with similar title AND description
+            var similarAnnouncements = _db.Announcements.Where(
+                _ => _.Title.Contains(announcement.Title) && _.Description.Contains(announcement.Description));
+            return Ok(similarAnnouncements);
         }
     }
 }
