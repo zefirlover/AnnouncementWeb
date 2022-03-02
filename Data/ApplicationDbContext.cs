@@ -20,28 +20,25 @@ namespace AnnouncementWeb.Data
         public override int SaveChanges()
         {
             UpdateDates();
-
             return base.SaveChanges();
         }
 
+        // overrides created to make a DateCreated property non-editable
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
         {
             UpdateDates();
-
             return base.SaveChanges(acceptAllChangesOnSuccess);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             UpdateDates();
-
             return base.SaveChangesAsync(cancellationToken);
         }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
             UpdateDates();
-
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
