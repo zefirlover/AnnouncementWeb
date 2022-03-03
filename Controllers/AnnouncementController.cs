@@ -71,7 +71,7 @@ namespace AnnouncementWeb.Controllers
 
             // find all announcements with similar title AND description
             var similarAnnouncements = _db.Announcements.Where(
-                _ => _.Title.Contains(announcement.Title) && _.Description.Contains(announcement.Description));
+                _ => _.Title.Contains(announcement.Title) && _.Description.Contains(announcement.Description)).Take(4);
             return Ok(similarAnnouncements);
         }
     }
