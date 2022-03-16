@@ -42,13 +42,16 @@ namespace AnnouncementWeb.Controllers
         public async Task<ActionResult<Announcement>> Update([FromRoute]int id,
             [FromBody]AnnouncementRequest announcementRequest)
         {
+            if (!ModelState.IsValid)
+                return BadRequest("Not a valid model");
+            
             var updateAnnouncement = _mapper.Map<Announcement>(announcementRequest);
             updateAnnouncement.Id = id;
             _db.Announcements.Update(updateAnnouncement);
             await _db.SaveChangesAsync();
             return Ok(announcementRequest);
         }
-
+        
         [HttpDelete("{id:int}")]
         public async Task<ActionResult<Announcement>> Delete([FromRoute]int id)
         {
@@ -61,7 +64,7 @@ namespace AnnouncementWeb.Controllers
             return Ok(announcement);
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}/similar")]
         public async Task<ActionResult<Announcement>> GetById([FromRoute] int id)
         {
             // get announcement by id
